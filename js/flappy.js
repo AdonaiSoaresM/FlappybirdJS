@@ -73,7 +73,7 @@ function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
 }
 
 function Passaro(alturaJogo) {
-    // let voando = false
+    let voando = false
 
     this.elemento = novoElemento('img','passaro')
     this.elemento.src = 'imgs/passaro.png'
@@ -122,6 +122,29 @@ function Progresso(){
 //     passaro.animar()
 // }, 20)
 
+function estaoSobrepostos(elementoA, elementoB){
+    const a = elementoA.getBoundingClientRect()
+    const b = elementoB.getBoundingClientRect()
+
+    const horizontal = a.left + a.width >= b.left
+        && b.left + b.width >= a.left
+    const vertical = a.top + a.height >= b.top
+        && b.top + b.height >= a.top
+    return horizontal && vertical
+}
+
+function colidiu(passaro, barreiras){
+    let colidiu = false
+    barreiras.pares.forEach(parDeBarreiras => {
+        if (!colidiu){
+            const superior = parDeBarreiras.superior.elemento
+            const inferior = parDeBarreiras.inferior.elemento
+            colidiu = estaoSobrepostos(passaro.elemento, superior)
+                || estaoSobrepostos(passaro.elemento, inferior)
+        }
+    })
+    return colidiu
+}
 
 function FlappyBird(){
     let pontos = 0
@@ -131,7 +154,7 @@ function FlappyBird(){
     const largura = areaDoJogo.clientWidth
 
     const progresso = new Progresso()
-    const barreiras = new Barreiras(altura, largura, 200, 400,
+    var barreiras = new Barreiras(altura, largura, 200, 400,
          () => progresso.atualizarPontos(++pontos))
     const passaro = new Passaro(altura)
 
@@ -144,9 +167,92 @@ function FlappyBird(){
         const temporizador = setInterval(() => {
             barreiras.animar()
             passaro.animar()
+            if(colidiu(passaro, barreiras)){
+                clearInterval(temporizador)
+                resetFlappy()
+            }
         }, 20)
     }
 }
 
+function startGame(){
+    
+    const areaDoJogo = document.querySelector('[wm-flappy]')
+    
+    this.logo = novoElemento('img','flappylogo')
+    this.logo.src = 'imgs/fblogo.png'
+    this.logo.style.width = '700px'
+    this.getWidthLogo = () => parseInt(this.logo.style.width.split('px')[0])
+    this.logo.style.left = `${(areaDoJogo.clientWidth / 2) - (this.getWidthLogo() / 2)}px`
 
-new FlappyBird().start()
+    this.bird = novoElemento('img','passaroMenu')
+    this.bird.src = 'imgs/passaro.png'
+    this.bird.style.width = '120px'
+    this.bird.style.top = '290px'
+    this.getWidthBird = () => parseInt(this.bird.style.width.split('px')[0])
+    this.getTopBird = () => parseInt(this.bird.style.top.split('px')[0])
+    this.bird.style.left = `${(areaDoJogo.clientWidth / 2) - (this.getWidthBird() / 2)}px`
+
+    this.linkar = novoElemento('a','linkar')
+    this.comecar = novoElemento('div','comecar')
+    this.cima = novoElemento('div','cima')
+    this.baixo = novoElemento('div','baixo')
+    this.texto = novoElemento('div','texto')
+    this.texto.innerHTML = 'START'
+
+    this.linkar.appendChild(this.comecar)
+    this.comecar.appendChild(this.cima)
+    this.comecar.appendChild(this.baixo)
+    this.comecar.appendChild(this.texto)
+
+    
+    this.linkar.href = '#'
+    this.comecar.style.width = '400px'
+    this.getWidthStart = () => parseInt(this.comecar.style.width.split('px')[0])
+    this.comecar.style.left = `${(areaDoJogo.clientWidth / 2) - (this.getWidthStart() / 2)}px`
+    
+    // const animacaoBird = setInterval(() => {
+    //     let position = this.getTopBird()
+    //         if(position == 290){
+    //             console.log('entrou')
+    //         }
+    // },100)
+
+    areaDoJogo.appendChild(this.bird)
+    areaDoJogo.appendChild(this.logo)
+    areaDoJogo.appendChild(this.linkar)
+
+    document.querySelector('.linkar').onclick = () => restartGame()
+}
+
+startGame()
+// new FlappyBird().start()
+
+function restartGame(){
+    const areaDoJogo = document.querySelector('[wm-flappy]')
+    areaDoJogo.innerHTML = '' 
+
+    new FlappyBird().start()
+}
+
+
+function resetFlappy(){
+
+    const areaDoJogo = document.querySelector('[wm-flappy]')
+    
+    this.fundo = novoElemento('div','fundoBranco')
+    areaDoJogo.append(this.fundo)
+    
+    this.linkReset = novoElemento('a','linkReset')
+    this.linkReset.href = '#'
+    this.reset = novoElemento('img','reset')
+    this.reset.src = 'imgs/reset.png'
+    this.reset.style.width = '400px'
+    this.getWidthReset = () => parseInt(this.reset.style.width.split('px')[0])
+    this.reset.style.left = `${(areaDoJogo.clientWidth / 2) - (this.getWidthReset() / 2)}px`
+
+    this.linkReset.appendChild(this.reset)
+    areaDoJogo.appendChild(this.linkReset)
+
+    document.querySelector('.linkReset').onclick = () => restartGame()
+}

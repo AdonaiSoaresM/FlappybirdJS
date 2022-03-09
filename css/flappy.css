@@ -6,6 +6,15 @@
     font-family: 'Pixel';
     src: url('../fonts/Pixel.ttf')
 }
+@font-face{
+    font-family: 'GamePlay';
+    src: url('../fonts/Gameplay.ttf')
+}
+
+@font-face{
+    font-family: 'Flappy';
+    src: url('../fonts/FlappyBirdy.ttf')
+}
 
 
 [wm-flappy] {
@@ -62,4 +71,65 @@
     font-family: Pixel;
     font-size: 70px;
     z-index: 1;
+}
+
+.flappylogo{
+    position: absolute;
+    top: 5%;
+    /* left: 250px; */
+    width: 700px;
+}
+
+.passaroMenu{
+    position: absolute;
+    top: 40%;
+    width: 100px;
+}
+
+.comecar{
+    position: absolute;
+    height: 150px;
+    width: 400px;
+    top: 65%;
+    border: 4px solid #000;
+    border-radius: 40px;
+    overflow: hidden;
+}
+
+.cima{
+    height: 50%;
+    width: 100%;
+    background-color: yellow;
+}
+
+.baixo{
+    height: 50%;
+    width: 100%;
+    background-color: goldenrod;
+}
+
+.texto{
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    font-size: 100px;
+    font-family: GamePlay;
+    color: #000;
+}
+
+.fundoBranco{
+    background-color: aliceblue;
+    z-index: 2;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 70%;
+}
+
+.reset{
+    width: 500px;
+    height: 180px;
+    position: absolute;
+    top: 220px;
+    z-index: 4;
 }
